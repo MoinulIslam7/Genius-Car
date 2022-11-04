@@ -32,7 +32,12 @@ const Header = () => {
                             {
                                 user?.uid
                                     ?
-                                    <button onClick={handleSignOut} className="btn btn-ghost normal-case text-xl mt-0">Sign Out</button>
+                                    <>
+                                    <Link to='/orders' className="btn btn-ghost normal-case text-xl mt-0">Orders</Link>
+                                     <Link onClick={handleSignOut} className="btn btn-ghost normal-case text-xl mt-0">Sign Out</Link>
+                                     
+                                     
+                                    </>
                                     :
                                     <>
                                         <Link to='/login'>
