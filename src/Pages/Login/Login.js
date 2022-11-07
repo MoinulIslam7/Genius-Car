@@ -5,12 +5,13 @@ import { AuthContext } from '../../Context/AuthProvider/AuthProvider';
 
 const Login = () => {
     const { signIn } = useContext(AuthContext);
-    const navigate = useNavigate();
+
     const [error, setError] = useState('');
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/'
+    const navigate = useNavigate();
+    const from = location.state?.from?.pathname || '/';
 
-    const handleLogin = event =>{
+    const handleLogin = event => {
         event.preventDefault();
         const form = event.target;
         const email = form.email.value;
@@ -23,7 +24,28 @@ const Login = () => {
                 console.log("Login user : ", user);
                 form.reset();
                 setError('');
-                navigate(from, { replace: true });
+                //get jwt token
+                const currentUSer = {
+                    email: user.email
+                }
+                console.log(currentUSer);
+                fetch('http://localhost:5000/jwt', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(currentUSer)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data)
+                        // local storage is the easiest but not the best place t store jwt
+                        localStorage.setItem('genius-token', data.token);
+                         navigate(from, { replace: true });
+                    })
+
+
+               
             })
             .catch((error) => {
                 console.error("error : ", error);
@@ -37,7 +59,7 @@ const Login = () => {
                     <img className='w-3/4' src={img} alt="" />
                 </div>
                 <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl ">
-                <h1 className="text-5xl font-boldn text-center">Login</h1>
+                    <h1 className="text-5xl font-boldn text-center">Login</h1>
                     <form onSubmit={handleLogin} className="card-body">
                         <div className="form-control">
                             <label className="label">
@@ -56,14 +78,14 @@ const Login = () => {
                         </div>
                         <div className="form-control mt-6">
                             <input className="btn btn-primary" type="submit" value="Login" />
-                            
+
                         </div>
                     </form>
                     <p className='text-xl p-6'>New to Genius card? <Link className='text-orange-600 font-bold' to='/signup'>SignUp Here</Link></p>
                     <br />
                     <label className="text-red-800 text-3xl">
-                                {error}
-                            </label>
+                        {error}
+                    </label>
                 </div>
             </div>
         </div>
